@@ -29,7 +29,9 @@ public class Client : HttpClient
         try
         {
             Timeout = TimeSpan.FromSeconds(7);
-            BaseAddress = new Uri(url ?? "");
+
+            if (url != null)
+                BaseAddress = new Uri(url ?? "");
         }
         catch (Exception)
         {
@@ -137,6 +139,34 @@ public class Client : HttpClient
 
 
     /// <summary>
+    /// Enviar solicitud [GET]
+    /// </summary>
+    public async Task<string> Get()
+    {
+        try
+        {
+            Build();
+
+            // Resultado.
+            var result = await GetAsync(string.Empty);
+
+            // Respuesta
+            var response = await result.Content.ReadAsStringAsync();
+
+            // Respuesta.
+            return response;
+
+        }
+        catch (Exception)
+        {
+        }
+
+        return "";
+    }
+
+
+
+    /// <summary>
     /// Enviar solicitud [POST]
     /// </summary>
     /// <param name="body">Body de documento.</param>
@@ -170,6 +200,42 @@ public class Client : HttpClient
         }
 
         return new();
+
+    }
+
+
+
+    /// <summary>
+    /// Enviar solicitud [POST]
+    /// </summary>
+    /// <param name="body">Body de documento.</param>
+    public async Task<string> Patch(object? body = null)
+    {
+
+        try
+        {
+            Build();
+
+            // Body en JSON.
+            string json = Json.Serialize(body);
+
+            // Contenido.
+            StringContent content = new(json, Encoding.UTF8, "application/json");
+
+            // Resultado.
+            var result = await this.PatchAsync(string.Empty, content);
+
+            // Respuesta
+            var response = await result.Content.ReadAsStringAsync();
+
+            // Respuesta.
+            return response;
+        }
+        catch (Exception)
+        {
+        }
+
+        return "";
 
     }
 
@@ -213,6 +279,41 @@ public class Client : HttpClient
 
 
     /// <summary>
+    /// Enviar solicitud [POST]
+    /// </summary>
+    /// <param name="body">Body de documento.</param>
+    public async Task<string> Post(object? body = null)
+    {
+        try
+        {
+            Build();
+
+            // Body en JSON.
+            string json = Json.Serialize(body);
+
+            // Contenido.
+            StringContent content = new(json, Encoding.UTF8, "application/json");
+
+            // Resultado.
+            var result = await PostAsync("", content);
+
+            // Respuesta
+            var response = await result.Content.ReadAsStringAsync();
+
+            // Respuesta.
+            return response;
+        }
+        catch (Exception)
+        {
+        }
+
+        return "";
+    }
+
+
+
+
+    /// <summary>
     /// Enviar solicitud [PUT]
     /// </summary>
     /// <param name="body">Body de documento.</param>
@@ -250,6 +351,40 @@ public class Client : HttpClient
 
 
     /// <summary>
+    /// Enviar solicitud [PUT]
+    /// </summary>
+    /// <param name="body">Body de documento.</param>
+    public async Task<string> Put(object? body = null)
+    {
+        try
+        {
+            Build();
+
+            // Body en JSON.
+            string json = Json.Serialize(body);
+
+            // Contenido.
+            StringContent content = new(json, Encoding.UTF8, "application/json");
+
+            // Resultado.
+            var result = await PutAsync(string.Empty, content);
+
+            // Respuesta
+            var response = await result.Content.ReadAsStringAsync();
+
+            // Respuesta.
+            return response;
+        }
+        catch (Exception)
+        {
+        }
+        return "";
+
+    }
+
+
+
+    /// <summary>
     /// Enviar solicitud [DELETE]
     /// </summary>
     public async Task<T> Delete<T>() where T : class, new()
@@ -275,6 +410,33 @@ public class Client : HttpClient
         { }
 
         return new();
+    }
+
+
+
+    /// <summary>
+    /// Enviar solicitud [DELETE]
+    /// </summary>
+    public async Task<string> Delete()
+    {
+
+        try
+        {
+            Build();
+
+            // Resultado.
+            var result = await DeleteAsync(string.Empty);
+
+            // Respuesta
+            var response = await result.Content.ReadAsStringAsync();
+
+            // Respuesta.
+            return response;
+        }
+        catch (Exception)
+        { }
+
+        return "";
     }
 
 
