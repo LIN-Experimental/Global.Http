@@ -8,7 +8,7 @@
 	  <IncludeSymbols>False</IncludeSymbols>
 	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 
-	  <Version>1.1</Version>
+	  <Version>1.3</Version>
 	  
   </PropertyGroup>
 

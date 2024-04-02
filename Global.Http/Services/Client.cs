@@ -79,11 +79,34 @@ public class Client : HttpClient
     /// <param name="value">Valor</param>
     public void AddParameter(string name, int value)
     {
-        Parameters.Add(name, value.ToString());
+        AddParameter(name, value.ToString());
+    }
+
+
+    /// <summary>
+    /// Agregar parámetro a la url
+    /// </summary>
+    /// <param name="name">Name</param>
+    /// <param name="value">Valor</param>
+    public void AddParameter(string name, bool value)
+    {
+        AddParameter(name, value.ToString());
     }
 
 
 
+    /// <summary>
+    /// Agregar parámetro a la url
+    /// </summary>
+    /// <param name="name">Name</param>
+    /// <param name="value">Valor</param>
+    public void AddParameter(string name, DateTime value)
+    {
+        AddParameter(name, value.ToString("yyyy-MM-ddTHH:mm:ss"));
+    }
+
+
+   
     /// <summary>
     /// Agregar un header.
     /// </summary>
@@ -102,10 +125,22 @@ public class Client : HttpClient
     /// <param name="value">Valor</param>
     public void AddHeader(string name, int value)
     {
-        DefaultRequestHeaders.Add(name, value.ToString());
+        AddHeader(name, value.ToString());
     }
 
 
+    /// <summary>
+    /// Agregar un header.
+    /// </summary>
+    /// <param name="name">Name</param>
+    /// <param name="value">Valor</param>
+    public void AddHeader(string name, bool value)
+    {
+        AddHeader(name, value.ToString());
+    }
+
+
+    
 
     /// <summary>
     /// Enviar solicitud [GET]
