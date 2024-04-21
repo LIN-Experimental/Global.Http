@@ -33,7 +33,7 @@ public class Service
 
             Uri.TryCreate(new Uri(Url), endpoint, out Uri? result);
 
-            client.BaseAddress = result;
+            client.SetBaseAddress(result);
             return client;
         }
         catch (Exception)

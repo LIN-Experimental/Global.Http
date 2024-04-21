@@ -1,8 +1,14 @@
 ﻿namespace Global.Http.Services;
 
 
-public class Client : HttpClient
+public class Client
 {
+
+
+    /// <summary>
+    /// Cliente HTTP.
+    /// </summary>
+    private readonly HttpClient HttpClient = new();
 
 
     /// <summary>
@@ -28,10 +34,10 @@ public class Client : HttpClient
     {
         try
         {
-            Timeout = TimeSpan.FromSeconds(7);
+           HttpClient.Timeout = TimeSpan.FromSeconds(7);
 
             if (url != null)
-                BaseAddress = new Uri(url ?? "");
+                HttpClient.BaseAddress = new Uri(url ?? "");
         }
         catch (Exception)
         {
@@ -47,9 +53,9 @@ public class Client : HttpClient
     {
         try
         {
-            Timeout = TimeSpan.FromSeconds(TimeOut);
-            string url = Global.Utilities.Network.Web.AddParameters(BaseAddress?.ToString() ?? "", Parameters);
-            BaseAddress = new Uri(url);
+            HttpClient.Timeout = TimeSpan.FromSeconds(TimeOut);
+            string url = Global.Utilities.Network.Web.AddParameters(HttpClient.BaseAddress?.ToString() ?? "", Parameters);
+            HttpClient.BaseAddress = new Uri(url);
         }
         catch (Exception)
         {
@@ -114,7 +120,7 @@ public class Client : HttpClient
     /// <param name="value">Valor</param>
     public void AddHeader(string name, string value)
     {
-        DefaultRequestHeaders.Add(name, value);
+        HttpClient.DefaultRequestHeaders.Add(name, value);
     }
 
 
@@ -152,7 +158,7 @@ public class Client : HttpClient
             Build();
 
             // Resultado.
-            var result = await GetAsync(string.Empty);
+            var result = await HttpClient.GetAsync(string.Empty);
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
@@ -183,7 +189,7 @@ public class Client : HttpClient
             Build();
 
             // Resultado.
-            var result = await GetAsync(string.Empty);
+            var result = await HttpClient.GetAsync(string.Empty);
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
@@ -219,7 +225,7 @@ public class Client : HttpClient
             StringContent content = new(json, Encoding.UTF8, "application/json");
 
             // Resultado.
-            var result = await this.PatchAsync(string.Empty, content);
+            var result = await HttpClient.PatchAsync(string.Empty, content);
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
@@ -258,7 +264,7 @@ public class Client : HttpClient
             StringContent content = new(json, Encoding.UTF8, "application/json");
 
             // Resultado.
-            var result = await this.PatchAsync(string.Empty, content);
+            var result = await HttpClient.PatchAsync(string.Empty, content);
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
@@ -293,7 +299,7 @@ public class Client : HttpClient
             StringContent content = new(json, Encoding.UTF8, "application/json");
 
             // Resultado.
-            var result = await PostAsync("", content);
+            var result = await HttpClient.PostAsync("", content);
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
@@ -330,7 +336,7 @@ public class Client : HttpClient
             StringContent content = new(json, Encoding.UTF8, "application/json");
 
             // Resultado.
-            var result = await PostAsync("", content);
+            var result = await HttpClient.PostAsync("", content);
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
@@ -365,7 +371,7 @@ public class Client : HttpClient
             StringContent content = new(json, Encoding.UTF8, "application/json");
 
             // Resultado.
-            var result = await PutAsync(string.Empty, content);
+            var result = await HttpClient.PutAsync(string.Empty, content);
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
@@ -402,7 +408,7 @@ public class Client : HttpClient
             StringContent content = new(json, Encoding.UTF8, "application/json");
 
             // Resultado.
-            var result = await PutAsync(string.Empty, content);
+            var result = await HttpClient.PutAsync(string.Empty, content);
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
@@ -430,7 +436,7 @@ public class Client : HttpClient
             Build();
 
             // Resultado.
-            var result = await DeleteAsync(string.Empty);
+            var result = await HttpClient.DeleteAsync(string.Empty);
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
@@ -460,7 +466,7 @@ public class Client : HttpClient
             Build();
 
             // Resultado.
-            var result = await DeleteAsync(string.Empty);
+            var result = await HttpClient.DeleteAsync(string.Empty);
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
@@ -500,6 +506,22 @@ public class Client : HttpClient
     }
 
 
+
+    /// <summary>
+    /// Establecer la URL base.
+    /// </summary>
+    /// <param name="url">Nueva URL.</param>
+    public void SetBaseAddress(string url) => SetBaseAddress(new Uri(url));
+    
+
+
+
+    /// <summary>
+    /// Establecer la URL base.
+    /// </summary>
+    /// <param name="url">Nueva URL.</param>
+    public void SetBaseAddress(Uri url) => HttpClient.BaseAddress = url;
+  
 
 
 }
