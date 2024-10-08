@@ -1,5 +1,6 @@
-﻿namespace Global.Http.Services;
+﻿using System.Linq;
 
+namespace Global.Http.Services;
 
 public class Client
 {
@@ -34,7 +35,7 @@ public class Client
     {
         try
         {
-           HttpClient.Timeout = TimeSpan.FromSeconds(7);
+            HttpClient.Timeout = TimeSpan.FromSeconds(7);
 
             if (url != null)
                 HttpClient.BaseAddress = new Uri(url ?? "");
@@ -60,10 +61,7 @@ public class Client
         catch (Exception)
         {
         }
-
     }
-
-
 
 
     /// <summary>
@@ -112,7 +110,7 @@ public class Client
     }
 
 
-   
+
     /// <summary>
     /// Agregar un header.
     /// </summary>
@@ -146,7 +144,51 @@ public class Client
     }
 
 
-    
+
+    public void BuildOutput(string method, object? body = null)
+    {
+
+        try
+        {
+            Build();
+
+            var headers = new StringBuilder();
+
+            // Agregar los headers
+            foreach (var header in HttpClient.DefaultRequestHeaders)
+            {
+                foreach (var value in header.Value)
+                {
+                    headers.AppendFormat(" -H \"{0}: {1}\"", header.Key, value);
+                }
+            }
+
+            var queryString = string.Join("\n", Parameters.Select(p => $"{p.Key}={p.Value}"));
+
+            string output = $""" 
+                             SOLICITUD HTTP.
+                             ========================================
+                             Method:{method}
+                             ========================================
+                             Headers:
+                             {headers}
+                             ========================================
+                             Parameters:
+                             {queryString}
+                             ========================================
+                             Body:
+                             {Json.Serialize(body)}
+                             """;
+
+            System.Diagnostics.Debug.WriteLine(output);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            Console.WriteLine(ex.Message);
+        }
+    }
+
 
     /// <summary>
     /// Enviar solicitud [GET]
@@ -155,7 +197,7 @@ public class Client
     {
         try
         {
-            Build();
+            BuildOutput("GET");
 
             // Resultado.
             var result = await HttpClient.GetAsync(string.Empty);
@@ -170,8 +212,9 @@ public class Client
             return @object;
 
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Console.WriteLine(ex.Message);
         }
 
         return new();
@@ -186,7 +229,7 @@ public class Client
     {
         try
         {
-            Build();
+            BuildOutput("GET");
 
             // Resultado.
             var result = await HttpClient.GetAsync(string.Empty);
@@ -198,8 +241,9 @@ public class Client
             return response;
 
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Console.WriteLine(ex.Message);
         }
 
         return "";
@@ -216,7 +260,7 @@ public class Client
 
         try
         {
-            Build();
+            BuildOutput("PATCH");
 
             // Body en JSON.
             string json = Json.Serialize(body);
@@ -236,8 +280,9 @@ public class Client
             // Respuesta.
             return @object;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Console.WriteLine(ex.Message);
         }
 
         return new();
@@ -255,7 +300,7 @@ public class Client
 
         try
         {
-            Build();
+            BuildOutput("PATCH");
 
             // Body en JSON.
             string json = Json.Serialize(body);
@@ -272,8 +317,9 @@ public class Client
             // Respuesta.
             return response;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Console.WriteLine(ex.Message);
         }
 
         return "";
@@ -290,7 +336,7 @@ public class Client
     {
         try
         {
-            Build();
+            BuildOutput("POST");
 
             // Body en JSON.
             string json = Json.Serialize(body);
@@ -310,8 +356,9 @@ public class Client
             // Respuesta.
             return @object;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Console.WriteLine(ex.Message);
         }
 
         return new();
@@ -327,7 +374,7 @@ public class Client
     {
         try
         {
-            Build();
+            BuildOutput("POST");
 
             // Body en JSON.
             string json = Json.Serialize(body);
@@ -344,9 +391,11 @@ public class Client
             // Respuesta.
             return response;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Console.WriteLine(ex.Message);
         }
+
 
         return "";
     }
@@ -362,7 +411,7 @@ public class Client
     {
         try
         {
-            Build();
+            BuildOutput("PUT");
 
             // Body en JSON.
             string json = Json.Serialize(body);
@@ -382,9 +431,11 @@ public class Client
             // Respuesta.
             return @object;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Console.WriteLine(ex.Message);
         }
+
         return new();
 
     }
@@ -399,7 +450,7 @@ public class Client
     {
         try
         {
-            Build();
+            BuildOutput("PUT");
 
             // Body en JSON.
             string json = Json.Serialize(body);
@@ -416,9 +467,11 @@ public class Client
             // Respuesta.
             return response;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Console.WriteLine(ex.Message);
         }
+
         return "";
 
     }
@@ -433,7 +486,7 @@ public class Client
 
         try
         {
-            Build();
+            BuildOutput("DELETE");
 
             // Resultado.
             var result = await HttpClient.DeleteAsync(string.Empty);
@@ -447,8 +500,11 @@ public class Client
             // Respuesta.
             return @object;
         }
-        catch (Exception)
-        { }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
 
         return new();
     }
@@ -463,7 +519,7 @@ public class Client
 
         try
         {
-            Build();
+            BuildOutput("DELETE");
 
             // Resultado.
             var result = await HttpClient.DeleteAsync(string.Empty);
@@ -474,8 +530,10 @@ public class Client
             // Respuesta.
             return response;
         }
-        catch (Exception)
-        { }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
 
         return "";
     }
@@ -498,8 +556,9 @@ public class Client
             return result ?? new();
 
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Console.WriteLine(ex.Message);
         }
 
         return new();
@@ -512,7 +571,7 @@ public class Client
     /// </summary>
     /// <param name="url">Nueva URL.</param>
     public void SetBaseAddress(string url) => SetBaseAddress(new Uri(url));
-    
+
 
 
 
@@ -521,7 +580,7 @@ public class Client
     /// </summary>
     /// <param name="url">Nueva URL.</param>
     public void SetBaseAddress(Uri url) => HttpClient.BaseAddress = url;
-  
+
 
 
 }
