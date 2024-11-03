@@ -2,10 +2,8 @@
 
 namespace Global.Http;
 
-
 public class Service
 {
-
 
     /// <summary>
     /// Url base.
@@ -13,12 +11,10 @@ public class Service
     private string DefaultUrl { get; set; } = string.Empty;
 
 
-
     /// <summary>
     /// Obtiene la Url.
     /// </summary>
     public string Url => DefaultUrl;
-
 
 
     /// <summary>
@@ -39,12 +35,8 @@ public class Service
         catch (Exception)
         {
         }
-
         return new();
-
     }
-
-
 
 
     /// <summary>
@@ -57,7 +49,6 @@ public class Service
     }
 
 
-
     /// <summary>
     /// Convertir la URL.
     /// </summary>
@@ -67,6 +58,5 @@ public class Service
         Uri.TryCreate(new Uri(Url), url, out Uri? result);
         return result?.ToString() ?? "";
     }
-
 
 }

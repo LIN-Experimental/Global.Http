@@ -3,7 +3,6 @@
 internal class Json
 {
 
-
     /// <summary>
     /// Serializar objeto.
     /// </summary>

@@ -1,10 +1,11 @@
-﻿using System.Linq;
+﻿using Newtonsoft.Json;
+using System.Linq;
+using System.Net.Http.Headers;
 
 namespace Global.Http.Services;
 
 public class Client
 {
-
 
     /// <summary>
     /// Cliente HTTP.
@@ -18,13 +19,10 @@ public class Client
     public int TimeOut { get; set; } = 20;
 
 
-
     /// <summary>
     /// Parámetros.
     /// </summary>
     private readonly Dictionary<string, string> Parameters = [];
-
-
 
 
     /// <summary>
@@ -35,7 +33,7 @@ public class Client
     {
         try
         {
-            HttpClient.Timeout = TimeSpan.FromSeconds(7);
+            HttpClient.Timeout = TimeSpan.FromSeconds(10);
 
             if (url != null)
                 HttpClient.BaseAddress = new Uri(url ?? "");
@@ -44,7 +42,6 @@ public class Client
         {
         }
     }
-
 
 
     /// <summary>
@@ -144,7 +141,11 @@ public class Client
     }
 
 
-
+    /// <summary>
+    /// Construir salida.
+    /// </summary>
+    /// <param name="method">Método.</param>
+    /// <param name="body">Body.</param>
     public void BuildOutput(string method, object? body = null)
     {
 
@@ -221,7 +222,6 @@ public class Client
     }
 
 
-
     /// <summary>
     /// Enviar solicitud [GET]
     /// </summary>
@@ -250,7 +250,6 @@ public class Client
     }
 
 
-
     /// <summary>
     /// Enviar solicitud [POST]
     /// </summary>
@@ -268,8 +267,14 @@ public class Client
             // Contenido.
             StringContent content = new(json, Encoding.UTF8, "application/json");
 
-            // Resultado.
-            var result = await HttpClient.PatchAsync(string.Empty, content);
+
+            // Crear la solicitud PATCH
+            var request = new HttpRequestMessage(new HttpMethod("PATCH"), string.Empty)
+            {
+                Content = content
+            };
+
+            var result = await HttpClient.SendAsync(request);
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
@@ -290,7 +295,6 @@ public class Client
     }
 
 
-
     /// <summary>
     /// Enviar solicitud [POST]
     /// </summary>
@@ -309,7 +313,14 @@ public class Client
             StringContent content = new(json, Encoding.UTF8, "application/json");
 
             // Resultado.
-            var result = await HttpClient.PatchAsync(string.Empty, content);
+
+            // Crear la solicitud PATCH
+            var request = new HttpRequestMessage(new HttpMethod("PATCH"), string.Empty)
+            {
+                Content = content
+            };
+
+            var result = await HttpClient.SendAsync(request);
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
@@ -325,7 +336,6 @@ public class Client
         return "";
 
     }
-
 
 
     /// <summary>
@@ -365,7 +375,6 @@ public class Client
     }
 
 
-
     /// <summary>
     /// Enviar solicitud [POST]
     /// </summary>
@@ -399,8 +408,6 @@ public class Client
 
         return "";
     }
-
-
 
 
     /// <summary>
@@ -441,7 +448,6 @@ public class Client
     }
 
 
-
     /// <summary>
     /// Enviar solicitud [PUT]
     /// </summary>
@@ -477,7 +483,6 @@ public class Client
     }
 
 
-
     /// <summary>
     /// Enviar solicitud [DELETE]
     /// </summary>
@@ -510,7 +515,6 @@ public class Client
     }
 
 
-
     /// <summary>
     /// Enviar solicitud [DELETE]
     /// </summary>
@@ -539,7 +543,6 @@ public class Client
     }
 
 
-
     /// <summary>
     /// Obtener una respuesta.
     /// </summary>
@@ -565,7 +568,6 @@ public class Client
     }
 
 
-
     /// <summary>
     /// Establecer la URL base.
     /// </summary>
@@ -573,14 +575,10 @@ public class Client
     public void SetBaseAddress(string url) => SetBaseAddress(new Uri(url));
 
 
-
-
     /// <summary>
     /// Establecer la URL base.
     /// </summary>
     /// <param name="url">Nueva URL.</param>
     public void SetBaseAddress(Uri url) => HttpClient.BaseAddress = url;
-
-
 
 }
