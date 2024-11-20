@@ -24,7 +24,7 @@ public class Json
 
 
 
-    public static T? Deserialize<T, U>(string json, Dictionary<string, Type> keys)
+    public static T? Deserialize<T, U>(string json, Dictionary<string, Type> keys, string property)
     {
         try
         {
@@ -36,7 +36,7 @@ public class Json
 
             var settings = new JsonSerializerSettings
             {
-                Converters = new List<JsonConverter> { new PolimorfismConverter<U>(keys, typeof(U)) }
+                Converters = new List<JsonConverter> { new PolimorfismConverter<U>(keys, typeof(U), property) }
             };
 
             var result = JsonConvert.DeserializeObject<T>(json, settings);
@@ -60,11 +60,13 @@ public class PolimorfismConverter<C> : JsonConverter
 {
     private readonly Dictionary<string, Type> _typeMappings;
     public readonly Type type;
+    public readonly string name;
 
-    public PolimorfismConverter(Dictionary<string, Type> typeMappings, Type type)
+    public PolimorfismConverter(Dictionary<string, Type> typeMappings, Type type, string field)
     {
         _typeMappings = typeMappings;
         this.type = type;
+        this.name = field;
     }
 
     public override bool CanConvert(Type objectType)
@@ -75,13 +77,19 @@ public class PolimorfismConverter<C> : JsonConverter
     public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
     {
         JObject jo = JObject.Load(reader);
-        string type = jo["type"]?.ToString();
+        string type = jo[name]?.ToString();
 
         if (type != null && _typeMappings.ContainsKey(type))
         {
             var targetType = _typeMappings[type];
             // Deserialize the object based on the type
             return jo.ToObject(targetType);
+        }
+
+        // Si es un tipo primitivo o no es un objeto, usar deserialización directa
+        if (objectType.IsPrimitive || objectType == typeof(string) || objectType == typeof(decimal) || (type == null && objectType == this.type))
+        {
+            return jo.ToObject(objectType);
         }
 
         // If Type is not found or invalid, just return a basic Animal

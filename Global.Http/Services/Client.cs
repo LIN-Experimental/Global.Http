@@ -742,7 +742,7 @@ public class Client
             if (types is null)
              result = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(content);
             else
-                result = Json.Deserialize<T?, U?>(content, types);
+                result = Json.Deserialize<T?, U?>(content, types, property);
 
             return result ?? new();
 
@@ -768,7 +768,7 @@ public class Client
 
             T? result = null;
 
-                result = Json.Deserialize<T?, T?>(content, null);
+                result = Json.Deserialize<T?, T?>(content, null, string.Empty);
 
             return result ?? new();
 
