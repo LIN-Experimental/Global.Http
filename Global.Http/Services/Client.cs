@@ -182,6 +182,7 @@ public class Client
                              """;
 
             System.Diagnostics.Debug.WriteLine(output);
+            Console.WriteLine(output);
         }
         catch (Exception ex)
         {
@@ -208,6 +209,37 @@ public class Client
 
             // Objeto
             T @object = Deserialize<T>(response);
+
+            // Respuesta.
+            return @object;
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+        return new();
+    }
+
+
+    /// <summary>
+    /// Enviar solicitud [GET]
+    /// </summary>
+    public async Task<T> Get<T, U>(Dictionary<string, Type> pairs, string property = "type_data") where T : class, new()
+    {
+        try
+        {
+            BuildOutput("GET");
+
+            // Resultado.
+            var result = await HttpClient.GetAsync(string.Empty);
+
+            // Respuesta
+            var response = await result.Content.ReadAsStringAsync();
+
+            // Objeto
+            T @object = Deserialize<T, U>(response, pairs, property);
 
             // Respuesta.
             return @object;
@@ -281,6 +313,51 @@ public class Client
 
             // Objeto
             T @object = Deserialize<T>(response);
+
+            // Respuesta.
+            return @object;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+        return new();
+
+    }
+
+
+    /// <summary>
+    /// Enviar solicitud [POST]
+    /// </summary>
+    /// <param name="body">Body de documento.</param>
+    public async Task<T> Patch<T, U>(object? body = null, Dictionary<string, Type>? types = null, string property = "type_data") where T : class, new()
+    {
+
+        try
+        {
+            BuildOutput("PATCH");
+
+            // Body en JSON.
+            string json = Json.Serialize(body);
+
+            // Contenido.
+            StringContent content = new(json, Encoding.UTF8, "application/json");
+
+
+            // Crear la solicitud PATCH
+            var request = new HttpRequestMessage(new HttpMethod("PATCH"), string.Empty)
+            {
+                Content = content
+            };
+
+            var result = await HttpClient.SendAsync(request);
+
+            // Respuesta
+            var response = await result.Content.ReadAsStringAsync();
+
+            // Objeto
+            T @object = Deserialize<T, U>(response, types, property);
 
             // Respuesta.
             return @object;
@@ -379,6 +456,43 @@ public class Client
     /// Enviar solicitud [POST]
     /// </summary>
     /// <param name="body">Body de documento.</param>
+    public async Task<T> Post<T, U>(object? body = null, Dictionary<string, Type>? types = null, string property = "type_data") where T : class, new()
+    {
+        try
+        {
+            BuildOutput("POST");
+
+            // Body en JSON.
+            string json = Json.Serialize(body);
+
+            // Contenido.
+            StringContent content = new(json, Encoding.UTF8, "application/json");
+
+            // Resultado.
+            var result = await HttpClient.PostAsync("", content);
+
+            // Respuesta
+            var response = await result.Content.ReadAsStringAsync();
+
+            // Objeto
+            T @object = Deserialize<T, U>(response, types, property);
+
+            // Respuesta.
+            return @object;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+        return new();
+    }
+
+
+    /// <summary>
+    /// Enviar solicitud [POST]
+    /// </summary>
+    /// <param name="body">Body de documento.</param>
     public async Task<string> Post(object? body = null)
     {
         try
@@ -434,6 +548,44 @@ public class Client
 
             // Objeto
             T @object = Deserialize<T>(response);
+
+            // Respuesta.
+            return @object;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+        return new();
+
+    }
+
+
+    /// <summary>
+    /// Enviar solicitud [PUT]
+    /// </summary>
+    /// <param name="body">Body de documento.</param>
+    public async Task<T> Put<T, U>(object? body = null, Dictionary<string, Type>? types = null, string property = "type_data") where T : class, new()
+    {
+        try
+        {
+            BuildOutput("PUT");
+
+            // Body en JSON.
+            string json = Json.Serialize(body);
+
+            // Contenido.
+            StringContent content = new(json, Encoding.UTF8, "application/json");
+
+            // Resultado.
+            var result = await HttpClient.PutAsync(string.Empty, content);
+
+            // Respuesta
+            var response = await result.Content.ReadAsStringAsync();
+
+            // Objeto
+            T @object = Deserialize<T, U>(response, types, property);
 
             // Respuesta.
             return @object;
@@ -544,6 +696,67 @@ public class Client
 
 
     /// <summary>
+    /// Enviar solicitud [DELETE]
+    /// </summary>
+    public async Task<T> Delete<T, U>(Dictionary<string, Type>? types = null,string property = "type_data") where T : class, new()
+    {
+
+        try
+        {
+            BuildOutput("DELETE");
+
+            // Resultado.
+            var result = await HttpClient.DeleteAsync(string.Empty);
+
+            // Respuesta
+            var response = await result.Content.ReadAsStringAsync();
+
+            // Objeto
+            T @object = Deserialize<T,U>(response, types, property);
+
+            // Respuesta.
+            return @object;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+
+        return new();
+    }
+
+
+    /// <summary>
+    /// Obtener una respuesta.
+    /// </summary>
+    /// <typeparam name="T">Tipo de la respuesta.</typeparam>
+    /// <param name="content">Contenido.</param>
+    public static T Deserialize<T, U>(string content, Dictionary<string, Type>? types, string property) where T : class, new()
+    {
+        try
+        {
+
+            T? result = null;
+
+            if (types is null)
+             result = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(content);
+            else
+                result = Json.Deserialize<T?, U?>(content, types);
+
+            return result ?? new();
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+        return new();
+    }
+
+
+    /// <summary>
     /// Obtener una respuesta.
     /// </summary>
     /// <typeparam name="T">Tipo de la respuesta.</typeparam>
@@ -552,9 +765,10 @@ public class Client
     {
         try
         {
-            // Objeto
-            var result = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(content);
 
+            T? result = null;
+
+                result = Json.Deserialize<T?, T?>(content, null);
 
             return result ?? new();
 
