@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 
@@ -72,7 +72,6 @@ public class Client
     }
 
 
-
     /// <summary>
     /// Agregar parámetro a la url
     /// </summary>
@@ -95,7 +94,6 @@ public class Client
     }
 
 
-
     /// <summary>
     /// Agregar parámetro a la url
     /// </summary>
@@ -105,7 +103,6 @@ public class Client
     {
         AddParameter(name, value.ToString("yyyy-MM-ddTHH:mm:ss"));
     }
-
 
 
     /// <summary>
@@ -525,6 +522,59 @@ public class Client
 
 
     /// <summary>
+    /// Enviar solicitud [POST]
+    /// </summary>
+    /// <typeparam name="T">Genérico.</typeparam>
+    /// <param name="stream">Stream.</param>
+    /// <param name="name">Nombre del archivo.</param>
+    /// <param name="onLoad">Acción al cargar.</param>
+    public async Task<T> Post<T>(Stream stream, string name, Action<double> onLoad) where T : class, new()
+    {
+        try
+        {
+            BuildOutput("POST");
+
+            // Obtener el tamaño total.
+            long totalBytes = stream.Length;
+
+            // Crear un Stream personalizado para rastrear el progreso.
+            var progressStream = new ProgressStream(stream, totalBytes, (sentBytes, totalBytes) =>
+            {
+                onLoad.Invoke((double)sentBytes / totalBytes * 100);
+            });
+
+            // Cliente.
+            using var content = new MultipartFormDataContent();
+
+            // Configuración.
+            var streamContent = new StreamContent(progressStream);
+            streamContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
+
+            // Nombre del archivo
+            content.Add(streamContent, "modelo", name);
+
+            // Enviar la solicitud POST.
+            var result = await HttpClient.PostAsync(string.Empty, content);
+
+            // Respuesta
+            var response = await result.Content.ReadAsStringAsync();
+
+            // Objeto
+            T @object = Deserialize<T>(response);
+
+            // Respuesta.
+            return @object;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+        return new();
+    }
+
+
+    /// <summary>
     /// Enviar solicitud [PUT]
     /// </summary>
     /// <param name="body">Body de documento.</param>
@@ -698,7 +748,7 @@ public class Client
     /// <summary>
     /// Enviar solicitud [DELETE]
     /// </summary>
-    public async Task<T> Delete<T, U>(Dictionary<string, Type>? types = null,string property = "type_data") where T : class, new()
+    public async Task<T> Delete<T, U>(Dictionary<string, Type>? types = null, string property = "type_data") where T : class, new()
     {
 
         try
@@ -712,7 +762,7 @@ public class Client
             var response = await result.Content.ReadAsStringAsync();
 
             // Objeto
-            T @object = Deserialize<T,U>(response, types, property);
+            T @object = Deserialize<T, U>(response, types, property);
 
             // Respuesta.
             return @object;
@@ -740,7 +790,7 @@ public class Client
             T? result = null;
 
             if (types is null)
-             result = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(content);
+                result = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(content);
             else
                 result = Json.Deserialize<T?, U?>(content, types, property);
 
@@ -768,7 +818,7 @@ public class Client
 
             T? result = null;
 
-                result = Json.Deserialize<T?, T?>(content, null, string.Empty);
+            result = Json.Deserialize<T?, T?>(content, null, string.Empty);
 
             return result ?? new();
 
