@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Linq;
 using System.Net.Http.Headers;
 
 namespace Global.Http.Services;
@@ -149,45 +148,17 @@ public class Client
         try
         {
             Build();
-
-            var headers = new StringBuilder();
-
-            // Agregar los headers
-            foreach (var header in HttpClient.DefaultRequestHeaders)
-            {
-                foreach (var value in header.Value)
-                {
-                    headers.AppendFormat(" -H \"{0}: {1}\"", header.Key, value);
-                }
-            }
-
-            var queryString = string.Join("\n", Parameters.Select(p => $"{p.Key}={p.Value}"));
-
-            string output = $""" 
-                             SOLICITUD HTTP.
-                             ========================================
-                             Method:{method}
-                             ========================================
-                             Headers:
-                             {headers}
-                             ========================================
-                             Parameters:
-                             {queryString}
-                             ========================================
-                             Body:
-                             {Json.Serialize(body)}
-                             """;
-
-            System.Diagnostics.Debug.WriteLine(output);
-            Console.WriteLine(output);
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine(ex.Message);
-            Console.WriteLine(ex.Message);
+          
         }
     }
 
+    private void Out(System.Net.HttpStatusCode code, string message)
+    {
+     
+    }
 
     /// <summary>
     /// Enviar solicitud [GET]
@@ -203,6 +174,8 @@ public class Client
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
+
+            Out(result.StatusCode, response);
 
             // Objeto
             T @object = Deserialize<T>(response);
@@ -235,6 +208,8 @@ public class Client
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
 
+            Out(result.StatusCode, response);
+
             // Objeto
             T @object = Deserialize<T, U>(response, pairs, property);
 
@@ -265,6 +240,8 @@ public class Client
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
+
+            Out(result.StatusCode, response);
 
             // Respuesta.
             return response;
@@ -307,6 +284,8 @@ public class Client
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
+
+            Out(result.StatusCode, response);
 
             // Objeto
             T @object = Deserialize<T>(response);
@@ -353,6 +332,8 @@ public class Client
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
 
+            Out(result.StatusCode, response);
+
             // Objeto
             T @object = Deserialize<T, U>(response, types, property);
 
@@ -396,9 +377,11 @@ public class Client
 
             var result = await HttpClient.SendAsync(request);
 
+
+
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
-
+            Out(result.StatusCode, response);
             // Respuesta.
             return response;
         }
@@ -433,6 +416,8 @@ public class Client
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
+
+            Out(result.StatusCode, response);
 
             // Objeto
             T @object = Deserialize<T>(response);
@@ -471,6 +456,8 @@ public class Client
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
 
+            Out(result.StatusCode, response);
+
             // Objeto
             T @object = Deserialize<T, U>(response, types, property);
 
@@ -507,6 +494,8 @@ public class Client
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
+
+            Out(result.StatusCode, response);
 
             // Respuesta.
             return response;
@@ -559,6 +548,8 @@ public class Client
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
 
+            Out(result.StatusCode, response);
+
             // Objeto
             T @object = Deserialize<T>(response);
 
@@ -595,6 +586,7 @@ public class Client
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
+            Out(result.StatusCode, response);
 
             // Objeto
             T @object = Deserialize<T>(response);
@@ -633,6 +625,7 @@ public class Client
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
+            Out(result.StatusCode, response);
 
             // Objeto
             T @object = Deserialize<T, U>(response, types, property);
@@ -669,8 +662,11 @@ public class Client
             // Resultado.
             var result = await HttpClient.PutAsync(string.Empty, content);
 
+
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
+
+            Out(result.StatusCode, response);
 
             // Respuesta.
             return response;
@@ -700,7 +696,7 @@ public class Client
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
-
+            Out(result.StatusCode, response);
             // Objeto
             T @object = Deserialize<T>(response);
 
@@ -732,7 +728,7 @@ public class Client
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
-
+            Out(result.StatusCode, response);
             // Respuesta.
             return response;
         }
@@ -760,7 +756,7 @@ public class Client
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
-
+            Out(result.StatusCode, response);
             // Objeto
             T @object = Deserialize<T, U>(response, types, property);
 

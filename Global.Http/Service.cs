@@ -10,12 +10,10 @@ public class Service
     /// </summary>
     private string DefaultUrl { get; set; } = string.Empty;
 
-
     /// <summary>
     /// Obtiene la Url.
     /// </summary>
     public string Url => DefaultUrl;
-
 
     /// <summary>
     /// Obtener un cliente Http.
@@ -38,7 +36,6 @@ public class Service
         return new();
     }
 
-
     /// <summary>
     /// Establecer la Url.
     /// </summary>
@@ -47,7 +44,6 @@ public class Service
     {
         DefaultUrl = url;
     }
-
 
     /// <summary>
     /// Convertir la URL.

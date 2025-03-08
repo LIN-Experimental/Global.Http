@@ -36,7 +36,7 @@ public class Json
 
             var settings = new JsonSerializerSettings
             {
-                Converters = new List<JsonConverter> { new PolimorfismConverter<U>(keys, typeof(U), property) }
+                Converters = [new PolimorfismConverter<U>(keys, typeof(U), property)]
             };
 
             var result = JsonConvert.DeserializeObject<T>(json, settings);
@@ -46,8 +46,9 @@ public class Json
 
 
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Console.WriteLine($"Error JSON: {ex.Message} - {ex.StackTrace}");
         }
         return default;
     }
