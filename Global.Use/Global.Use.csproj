@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LIN.Types" Version="2.0.0" />
+    <PackageReference Include="LIN.Types" Version="2.1.0" />
     <PackageReference Include="LIN.Types.Developer" Version="1.9.0" />
   </ItemGroup>
 
