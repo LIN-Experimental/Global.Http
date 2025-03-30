@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Linq;
 
 namespace Global.Http.Services;
 
@@ -77,24 +78,31 @@ public class PolimorfismConverter<C> : JsonConverter
 
     public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
     {
-        JObject jo = JObject.Load(reader);
-        string type = jo[name]?.ToString();
+        // Cargar el objeto.
+        JObject @object = JObject.Load(reader);
 
-        if (type != null && _typeMappings.ContainsKey(type))
+        // Validar si existe la propiedad.
+        JToken? value = @object.Properties()
+                               .FirstOrDefault(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));
+
+        // Obtener la key de la propiedad.
+        var key = _typeMappings.FirstOrDefault(t => t.Key.ToLower() == value?.Last?.ToString()?.ToLower());
+
+        // Si existe la propiedad, deserializamos.
+        if (value is not null && key.Key is not null && key.Value is not null)
         {
-            var targetType = _typeMappings[type];
             // Deserialize the object based on the type
-            return jo.ToObject(targetType);
+            return @object.ToObject(key.Value) ?? null!;
         }
 
         // Si es un tipo primitivo o no es un objeto, usar deserialización directa
         if (objectType.IsPrimitive || objectType == typeof(string) || objectType == typeof(decimal) || (type == null && objectType == this.type))
         {
-            return jo.ToObject(objectType);
+            return @object.ToObject(objectType) ?? null!;
         }
 
         // If Type is not found or invalid, just return a basic Animal
-        return jo.ToObject<C>(serializer);
+        return @object.ToObject(objectType) ?? null!;
     }
 
     public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
