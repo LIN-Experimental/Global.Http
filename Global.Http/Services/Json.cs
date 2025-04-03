@@ -15,7 +15,7 @@ public class Json
     {
         try
         {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(obj);
+            return JsonConvert.SerializeObject(obj);
         }
         catch (Exception)
         {

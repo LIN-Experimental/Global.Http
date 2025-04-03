@@ -4,6 +4,23 @@ using LIN.Types.Developer.Models;
 using LIN.Types.Responses;
 using Newtonsoft.Json;
 
+
+var z = new
+{
+    name = "hola",
+    databaseName = "hola",
+    defaultUser = "hola",
+    password = "hola"
+};
+
+
+var ss = Newtonsoft.Json.JsonConvert.SerializeObject(z);
+
+
+
+
+
+
 string aa = """"
 {
   "Model": {

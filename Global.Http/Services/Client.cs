@@ -51,7 +51,7 @@ public class Client
         try
         {
             HttpClient.Timeout = TimeSpan.FromSeconds(TimeOut);
-            string url = Global.Utilities.Network.Web.AddParameters(HttpClient.BaseAddress?.ToString() ?? "", Parameters);
+            string url = Utilities.Network.Web.AddParameters(HttpClient.BaseAddress?.ToString() ?? "", Parameters);
             HttpClient.BaseAddress = new Uri(url);
         }
         catch (Exception)
@@ -257,7 +257,7 @@ public class Client
 
 
     /// <summary>
-    /// Enviar solicitud [POST]
+    /// Enviar solicitud [PATCH]
     /// </summary>
     /// <param name="body">Body de documento.</param>
     public async Task<T> Patch<T>(object? body = null) where T : class, new()
@@ -304,7 +304,7 @@ public class Client
 
 
     /// <summary>
-    /// Enviar solicitud [POST]
+    /// Enviar solicitud [PATH]
     /// </summary>
     /// <param name="body">Body de documento.</param>
     public async Task<T> Patch<T, U>(object? body = null, Dictionary<string, Type>? types = null, string property = "type_data") where T : class, new()
@@ -351,7 +351,7 @@ public class Client
 
 
     /// <summary>
-    /// Enviar solicitud [POST]
+    /// Enviar solicitud [PATCH]
     /// </summary>
     /// <param name="body">Body de documento.</param>
     public async Task<string> Patch(object? body = null)
