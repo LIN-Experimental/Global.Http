@@ -151,13 +151,13 @@ public class Client
         }
         catch (Exception ex)
         {
-          
+
         }
     }
 
     private void Out(System.Net.HttpStatusCode code, string message)
     {
-     
+
     }
 
     /// <summary>
