@@ -1,4 +1,5 @@
-﻿using System.IO;
+using System.IO;
+using System.Threading;
 using System.Net.Http.Headers;
 
 namespace Global.Http.Services;
@@ -163,14 +164,15 @@ public class Client
     /// <summary>
     /// Enviar solicitud [GET]
     /// </summary>
-    public async Task<T> Get<T>() where T : class, new()
+    /// <param name="cancellationToken">Token de cancelación.</param>
+    public async Task<T> Get<T>(CancellationToken cancellationToken = default) where T : class, new()
     {
         try
         {
             BuildOutput("GET");
 
             // Resultado.
-            var result = await HttpClient.GetAsync(string.Empty);
+            var result = await HttpClient.GetAsync(string.Empty, cancellationToken);
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
@@ -196,14 +198,15 @@ public class Client
     /// <summary>
     /// Enviar solicitud [GET]
     /// </summary>
-    public async Task<T> Get<T, U>(Dictionary<string, Type> pairs, string property = "type_data") where T : class, new()
+    /// <param name="cancellationToken">Token de cancelación.</param>
+    public async Task<T> Get<T, U>(Dictionary<string, Type> pairs, string property = "type_data", CancellationToken cancellationToken = default) where T : class, new()
     {
         try
         {
             BuildOutput("GET");
 
             // Resultado.
-            var result = await HttpClient.GetAsync(string.Empty);
+            var result = await HttpClient.GetAsync(string.Empty, cancellationToken);
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
@@ -229,14 +232,15 @@ public class Client
     /// <summary>
     /// Enviar solicitud [GET]
     /// </summary>
-    public async Task<string> Get()
+    /// <param name="cancellationToken">Token de cancelación.</param>
+    public async Task<string> Get(CancellationToken cancellationToken = default)
     {
         try
         {
             BuildOutput("GET");
 
             // Resultado.
-            var result = await HttpClient.GetAsync(string.Empty);
+            var result = await HttpClient.GetAsync(string.Empty, cancellationToken);
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
@@ -260,7 +264,8 @@ public class Client
     /// Enviar solicitud [PATCH]
     /// </summary>
     /// <param name="body">Body de documento.</param>
-    public async Task<T> Patch<T>(object? body = null) where T : class, new()
+    /// <param name="cancellationToken">Token de cancelación.</param>
+    public async Task<T> Patch<T>(object? body = null, CancellationToken cancellationToken = default) where T : class, new()
     {
 
         try
@@ -280,7 +285,7 @@ public class Client
                 Content = content
             };
 
-            var result = await HttpClient.SendAsync(request);
+            var result = await HttpClient.SendAsync(request, cancellationToken);
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
@@ -307,7 +312,8 @@ public class Client
     /// Enviar solicitud [PATH]
     /// </summary>
     /// <param name="body">Body de documento.</param>
-    public async Task<T> Patch<T, U>(object? body = null, Dictionary<string, Type>? types = null, string property = "type_data") where T : class, new()
+    /// <param name="cancellationToken">Token de cancelación.</param>
+    public async Task<T> Patch<T, U>(object? body = null, Dictionary<string, Type>? types = null, string property = "type_data", CancellationToken cancellationToken = default) where T : class, new()
     {
 
         try
@@ -327,7 +333,7 @@ public class Client
                 Content = content
             };
 
-            var result = await HttpClient.SendAsync(request);
+            var result = await HttpClient.SendAsync(request, cancellationToken);
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
@@ -354,7 +360,8 @@ public class Client
     /// Enviar solicitud [PATCH]
     /// </summary>
     /// <param name="body">Body de documento.</param>
-    public async Task<string> Patch(object? body = null)
+    /// <param name="cancellationToken">Token de cancelación.</param>
+    public async Task<string> Patch(object? body = null, CancellationToken cancellationToken = default)
     {
 
         try
@@ -375,7 +382,7 @@ public class Client
                 Content = content
             };
 
-            var result = await HttpClient.SendAsync(request);
+            var result = await HttpClient.SendAsync(request, cancellationToken);
 
 
 
@@ -399,7 +406,8 @@ public class Client
     /// Enviar solicitud [POST]
     /// </summary>
     /// <param name="body">Body de documento.</param>
-    public async Task<T> Post<T>(object? body = null) where T : class, new()
+    /// <param name="cancellationToken">Token de cancelación.</param>
+    public async Task<T> Post<T>(object? body = null, CancellationToken cancellationToken = default) where T : class, new()
     {
         try
         {
@@ -412,7 +420,7 @@ public class Client
             StringContent content = new(json, Encoding.UTF8, "application/json");
 
             // Resultado.
-            var result = await HttpClient.PostAsync("", content);
+            var result = await HttpClient.PostAsync("", content, cancellationToken);
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
@@ -438,7 +446,8 @@ public class Client
     /// Enviar solicitud [POST]
     /// </summary>
     /// <param name="body">Body de documento.</param>
-    public async Task<T> Post<T, U>(object? body = null, Dictionary<string, Type>? types = null, string property = "type_data") where T : class, new()
+    /// <param name="cancellationToken">Token de cancelación.</param>
+    public async Task<T> Post<T, U>(object? body = null, Dictionary<string, Type>? types = null, string property = "type_data", CancellationToken cancellationToken = default) where T : class, new()
     {
         try
         {
@@ -451,7 +460,7 @@ public class Client
             StringContent content = new(json, Encoding.UTF8, "application/json");
 
             // Resultado.
-            var result = await HttpClient.PostAsync("", content);
+            var result = await HttpClient.PostAsync("", content, cancellationToken);
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
@@ -477,7 +486,8 @@ public class Client
     /// Enviar solicitud [POST]
     /// </summary>
     /// <param name="body">Body de documento.</param>
-    public async Task<string> Post(object? body = null)
+    /// <param name="cancellationToken">Token de cancelación.</param>
+    public async Task<string> Post(object? body = null, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -490,7 +500,7 @@ public class Client
             StringContent content = new(json, Encoding.UTF8, "application/json");
 
             // Resultado.
-            var result = await HttpClient.PostAsync("", content);
+            var result = await HttpClient.PostAsync("", content, cancellationToken);
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
@@ -517,7 +527,8 @@ public class Client
     /// <param name="stream">Stream.</param>
     /// <param name="name">Nombre del archivo.</param>
     /// <param name="onLoad">Acción al cargar.</param>
-    public async Task<T> Post<T>(Stream stream, string name, Action<double> onLoad) where T : class, new()
+    /// <param name="cancellationToken">Token de cancelación.</param>
+    public async Task<T> Post<T>(Stream stream, string name, Action<double> onLoad, CancellationToken cancellationToken = default) where T : class, new()
     {
         try
         {
@@ -543,7 +554,7 @@ public class Client
             content.Add(streamContent, "modelo", name);
 
             // Enviar la solicitud POST.
-            var result = await HttpClient.PostAsync(string.Empty, content);
+            var result = await HttpClient.PostAsync(string.Empty, content, cancellationToken);
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
@@ -569,7 +580,8 @@ public class Client
     /// Enviar solicitud [PUT]
     /// </summary>
     /// <param name="body">Body de documento.</param>
-    public async Task<T> Put<T>(object? body = null) where T : class, new()
+    /// <param name="cancellationToken">Token de cancelación.</param>
+    public async Task<T> Put<T>(object? body = null, CancellationToken cancellationToken = default) where T : class, new()
     {
         try
         {
@@ -582,7 +594,7 @@ public class Client
             StringContent content = new(json, Encoding.UTF8, "application/json");
 
             // Resultado.
-            var result = await HttpClient.PutAsync(string.Empty, content);
+            var result = await HttpClient.PutAsync(string.Empty, content, cancellationToken);
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
@@ -608,7 +620,8 @@ public class Client
     /// Enviar solicitud [PUT]
     /// </summary>
     /// <param name="body">Body de documento.</param>
-    public async Task<T> Put<T, U>(object? body = null, Dictionary<string, Type>? types = null, string property = "type_data") where T : class, new()
+    /// <param name="cancellationToken">Token de cancelación.</param>
+    public async Task<T> Put<T, U>(object? body = null, Dictionary<string, Type>? types = null, string property = "type_data", CancellationToken cancellationToken = default) where T : class, new()
     {
         try
         {
@@ -621,7 +634,7 @@ public class Client
             StringContent content = new(json, Encoding.UTF8, "application/json");
 
             // Resultado.
-            var result = await HttpClient.PutAsync(string.Empty, content);
+            var result = await HttpClient.PutAsync(string.Empty, content, cancellationToken);
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
@@ -647,7 +660,8 @@ public class Client
     /// Enviar solicitud [PUT]
     /// </summary>
     /// <param name="body">Body de documento.</param>
-    public async Task<string> Put(object? body = null)
+    /// <param name="cancellationToken">Token de cancelación.</param>
+    public async Task<string> Put(object? body = null, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -660,7 +674,7 @@ public class Client
             StringContent content = new(json, Encoding.UTF8, "application/json");
 
             // Resultado.
-            var result = await HttpClient.PutAsync(string.Empty, content);
+            var result = await HttpClient.PutAsync(string.Empty, content, cancellationToken);
 
 
             // Respuesta
@@ -684,7 +698,8 @@ public class Client
     /// <summary>
     /// Enviar solicitud [DELETE]
     /// </summary>
-    public async Task<T> Delete<T>() where T : class, new()
+    /// <param name="cancellationToken">Token de cancelación.</param>
+    public async Task<T> Delete<T>(CancellationToken cancellationToken = default) where T : class, new()
     {
 
         try
@@ -692,7 +707,7 @@ public class Client
             BuildOutput("DELETE");
 
             // Resultado.
-            var result = await HttpClient.DeleteAsync(string.Empty);
+            var result = await HttpClient.DeleteAsync(string.Empty, cancellationToken);
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
@@ -716,7 +731,8 @@ public class Client
     /// <summary>
     /// Enviar solicitud [DELETE]
     /// </summary>
-    public async Task<string> Delete()
+    /// <param name="cancellationToken">Token de cancelación.</param>
+    public async Task<string> Delete(CancellationToken cancellationToken = default)
     {
 
         try
@@ -724,7 +740,7 @@ public class Client
             BuildOutput("DELETE");
 
             // Resultado.
-            var result = await HttpClient.DeleteAsync(string.Empty);
+            var result = await HttpClient.DeleteAsync(string.Empty, cancellationToken);
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
@@ -744,7 +760,8 @@ public class Client
     /// <summary>
     /// Enviar solicitud [DELETE]
     /// </summary>
-    public async Task<T> Delete<T, U>(Dictionary<string, Type>? types = null, string property = "type_data") where T : class, new()
+    /// <param name="cancellationToken">Token de cancelación.</param>
+    public async Task<T> Delete<T, U>(Dictionary<string, Type>? types = null, string property = "type_data", CancellationToken cancellationToken = default) where T : class, new()
     {
 
         try
@@ -752,7 +769,7 @@ public class Client
             BuildOutput("DELETE");
 
             // Resultado.
-            var result = await HttpClient.DeleteAsync(string.Empty);
+            var result = await HttpClient.DeleteAsync(string.Empty, cancellationToken);
 
             // Respuesta
             var response = await result.Content.ReadAsStringAsync();
